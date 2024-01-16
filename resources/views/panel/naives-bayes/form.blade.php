@@ -58,9 +58,20 @@
                   <label class="control-label col-sm-3 align-self-center mb-0" for="select2Role">Tipe Build :</label>
                   <div class="col-sm-9">
                     <select name="tipe_build" class="form-select">
-                      <option value="Physical" @selected(isset($data->tipe_build) && $data->tipe_build == "Physical")>Physical</option>
+                      <option value="Physical" @selected(isset($data->tipe_build) && $data->tipe_build == "Damage")>Damage</option>
                       <option value="Magic" @selected(isset($data->tipe_build) && $data->tipe_build == "Magic")>Magic</option>
                       <option value="Tank" @selected(isset($data->tipe_build) && $data->tipe_build == "Tank")>Tank</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row mb-3">
+                  <label class="control-label col-sm-3 align-self-center mb-0" for="select2Role">Emblem :</label>
+                  <div class="col-sm-9">
+                    <select name="emblem" class="form-select">
+                      <option value="Tank" @selected(isset($data->emblem) && $data->emblem == "Tank")>Tank</option>
+                      <option value="Assassin" @selected(isset($data->emblem) && $data->emblem == "Assassin")>Assassin</option>
+                      <option value="Mage" @selected(isset($data->emblem) && $data->emblem == "Mage")>Mage</option>
+                      <option value="Marksman" @selected(isset($data->emblem) && $data->emblem == "Marksman")>Marksman</option>
                     </select>
                   </div>
                 </div>

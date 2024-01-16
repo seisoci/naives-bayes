@@ -9,21 +9,27 @@
             <h4 class="card-title">{{ $config['title'] ?? '' }}</h4>
           </div>
           <div class="col-sm-6 col-lg-6">
-            <a href="{{ route('panel.naive-bayes.create') }}" class="btn btn-primary float-end">
-              <i class="fa-solid fa-plus"></i> Tambah
-            </a>
+         <div class="d-flex justify-content-end">
+           <a href="{{ route('panel.naive-bayes.show', 'prediksi') }}" class="btn btn-primary me-2">
+              <i class="fa-solid fa-plus"></i> Prediksi Kemenangan
+           </a>
+           <a href="{{ route('panel.naive-bayes.create') }}" class="btn btn-primary">
+             <i class="fa-solid fa-plus"></i> Tambah
+           </a>
+         </div>
           </div>
         </div>
       </div>
     </div>
     <div class="card-body">
       <div class="table-responsive">
-        <table id="dataTable" class="table table-bordered w-100">
+        <table id="Datatable" class="table table-striped w-100">
           <thead>
           <tr>
             <th>Hero</th>
             <th>Hero Musuh</th>
             <th>Tipe Build</th>
+            <th>Emblem</th>
             <th>Hasil</th>
             <th data-priority="1">Aksi</th>
           </tr>
@@ -50,7 +56,18 @@
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script>
     $(document).ready(function () {
-      let DataTable = $('#dataTable').DataTable({
+      let dataTable = $('#Datatable').DataTable({
+        lengthChange: false,
+        buttons: ['pageLength', {
+          extend: 'copy',
+          footer: true
+        }, {
+          extend: 'csv',
+          footer: true
+        }, {
+          extend: 'excel',
+          footer: true
+        },],
         responsive: true,
         serverSide: true,
         processing: true,
@@ -61,12 +78,13 @@
           }
         },
         order: [[1, 'asc']],
-        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
-        pageLength: 10,
+        lengthMenu: [[100, 250, 1000, -1], [100, 250, 1000, "All"]],
+        pageLength: 100,
         columns: [
           {data: 'hero.nama', name: 'hero.nama'},
           {data: 'hero_musuh.nama', name: 'hero_musuh.nama'},
           {data: 'tipe_build', name: 'tipe_build'},
+          {data: 'emblem', name: 'emblem'},
           {data: 'hasil', name: 'hasil'},
           {
             data: 'action',
@@ -113,7 +131,10 @@
               }
             });
           });
-        }
+        },
+        initComplete: function (settings, json) {
+          dataTable.buttons().container().appendTo('#Datatable_wrapper .col-md-6:eq(0)')
+        },
       });
 
     });

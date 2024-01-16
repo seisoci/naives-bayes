@@ -116,5 +116,6 @@ Route::middleware('auth:panel')->group(function () {
 
   Route::get('heroes/select2', [Panel\HeroController::class, 'select2'])->name('heroes.select2');
   Route::resource('heroes', Panel\HeroController::class);
+  Route::post('naive-bayes/prediksi', [Panel\NaiveBayesController::class, 'prediksi'])->name('naive-bayes.prediksi');
   Route::resource('naive-bayes', Panel\NaiveBayesController::class);
 });

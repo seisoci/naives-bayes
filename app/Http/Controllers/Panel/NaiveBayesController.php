@@ -2,17 +2,13 @@
 
 namespace App\Http\Controllers\Panel;
 
-use App\Helpers\FileUpload;
+use App\Helpers\NaiveBayesClassifier;
 use App\Http\Controllers\Controller;
-use App\Models\Admin;
-use App\Models\Hero;
 use App\Models\NaiveBayes;
 use App\Traits\ResponseStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -46,8 +42,8 @@ class NaiveBayesController extends Controller
                   <i class="ri-more-fill align-middle"></i>
               </button>
               <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="'.route('panel.naive-bayes.edit', $row->id).'">Edit</a></li>
-                <li><a class="dropdown-item btn-delete" href="#" data-id ="'.$row->id.'" >Hapus</a></li>
+                <li><a class="dropdown-item" href="' . route('panel.naive-bayes.edit', $row->id) . '">Edit</a></li>
+                <li><a class="dropdown-item btn-delete" href="#" data-id ="' . $row->id . '" >Hapus</a></li>
               </ul>
           </div>';
 
@@ -66,7 +62,7 @@ class NaiveBayesController extends Controller
       ['url' => '#', 'title' => "Tambah Dataset"],
     ];
 
-    $config['form'] = (object) [
+    $config['form'] = (object)[
       'method' => 'POST',
       'action' => route('panel.naive-bayes.store')
     ];
@@ -107,7 +103,7 @@ class NaiveBayesController extends Controller
       ['url' => '#', 'title' => "Edit Dataset"],
     ];
     $data = NaiveBayes::with('hero', 'hero_musuh')->findOrFail($id);
-    $config['form'] = (object) [
+    $config['form'] = (object)[
       'method' => 'PUT',
       'action' => route('panel.naive-bayes.update', $id)
     ];
@@ -138,6 +134,47 @@ class NaiveBayesController extends Controller
       $response = response()->json(['error' => $validator->errors()->all()]);
     }
     return $response;
+  }
+
+  public function show($id)
+  {
+    $config['title'] = "Prediksi Kemenangan";
+    $config['breadcrumbs'] = [
+      ['url' => route('panel.naive-bayes.index'), 'title' => "Tabel Dataset"],
+      ['url' => '#', 'title' => "Prediksi Kemenangan"],
+    ];
+
+    $config['form'] = (object)[
+      'method' => 'POST',
+      'action' => route('panel.naive-bayes.store')
+    ];
+
+    return view('panel.naives-bayes.prediksi', compact('config'));
+  }
+
+  public function prediksi(Request $request)
+  {
+      $dataTraining = NaiveBayes::selectRaw('
+        `hero_pick`.`nama` as `hero`,
+        `hero_pick`.`nama` as `hero_musuh`,
+        `naive_bayes`.`tipe_build`,
+        `naive_bayes`.`emblem`,
+        `naive_bayes`.`hasil`
+      ')
+      ->leftJoin('heroes AS hero_pick', 'hero_pick.id', '=', 'naive_bayes.hero_id')
+      ->leftJoin('heroes AS hero_musuh', 'hero_musuh.id', '=', 'naive_bayes.hero_musuh_id')
+      ->get()
+      ->toArray();
+
+    $naiveBayes = new NaiveBayesClassifier($dataTraining);
+    $result = $naiveBayes->predict($request->all());
+//    dd($naiveBayes->getTableCounts());
+    $naiveBayesRumus = $naiveBayes->getRumusPredict();
+    $naiveBayesClass = $naiveBayes->getClassCount();
+    $naiveBayes = $naiveBayes->getTableCounts();
+    $render = view('panel.naives-bayes.result', compact('result', 'naiveBayes', 'naiveBayesRumus', 'naiveBayesClass'))->render();
+
+    return response()->json($render);
   }
 
   public function destroy($id)

@@ -13,6 +13,7 @@ class NaiveBayes extends Model
     'hero_id',
     'hero_musuh_id',
     'tipe_build',
+    'emblem',
     'hasil'
   ];
 
