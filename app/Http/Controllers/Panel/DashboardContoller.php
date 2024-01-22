@@ -29,18 +29,6 @@ class DashboardContoller extends Controller
     ];
 
     $data = [
-      'userCount' => User::count(),
-      'scriptCount' => Script::query()->example(false)->count(),
-      'scriptExampleCount' => Script::query()->example(true)->count(),
-      'questionCount' => Question::count(),
-      'examinationCount' => Examination::count(),
-      'examinationPlanCount' => Examination::where('status', 'Plan')->count(),
-      'examinationOnGoingCount' => Examination::where('status', 'On Going')->count(),
-      'examinationDoneCount' => Examination::where('status', 'Done')->count(),
-      'ticketCount' => Ticket::count(),
-      'ticketAvailableCount' => Ticket::whereNull('owner_id')->count(),
-      'ticketHavingCount' => Ticket::whereNotNull('owner_id')->count(),
-      'ticketUsedCount' => Participant::count(),
     ];
 
     return view('panel.dashboard.index', compact('config', 'data'));

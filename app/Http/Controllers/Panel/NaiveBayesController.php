@@ -32,7 +32,10 @@ class NaiveBayesController extends Controller
     ];
 
     if ($request->ajax()) {
-      $model = NaiveBayes::with(['hero', 'hero_musuh']);
+      $model = NaiveBayes::selectRaw('
+        `naive_bayes`.*
+        ')
+        ->with(['hero', 'hero_musuh']);
 
       return DataTables::of($model)
         ->addColumn('action', function ($row) {

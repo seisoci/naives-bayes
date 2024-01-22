@@ -77,8 +77,6 @@ class HeroController extends Controller
   {
     $validator = Validator::make($request->all(), [
       'nama' => 'required',
-      'deskripsi' => 'required',
-      'image' => 'required',
     ]);
     if ($validator->passes()) {
       DB::beginTransaction();
@@ -112,8 +110,7 @@ class HeroController extends Controller
       ['url' => route('panel.heroes.index'), 'title' => "Hero"],
       ['url' => '#', 'title' => "Edit Hero"],
     ];
-    $data = Hero::with('roles')
-      ->where('id', $id)
+    $data = Hero::where('id', $id)
       ->first();
 
     $config['form'] = (object)[
@@ -127,8 +124,6 @@ class HeroController extends Controller
   {
     $validator = Validator::make($request->all(), [
       'nama' => 'required',
-      'deskripsi' => 'required',
-      'image' => 'required',
     ]);
     if ($validator->passes()) {
       DB::beginTransaction();

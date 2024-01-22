@@ -10,8 +10,8 @@
           </div>
           <div class="col-sm-6 col-lg-6">
          <div class="d-flex justify-content-end">
-           <a href="{{ route('panel.naive-bayes.show', 'prediksi') }}" class="btn btn-primary me-2">
-              <i class="fa-solid fa-plus"></i> Prediksi Kemenangan
+           <a href="{{ route('panel.naive-bayes.show', 'prediksi') }}" class="btn btn-success me-2">
+             <i class="fa-solid fa-calculator"></i> Prediksi Kemenangan
            </a>
            <a href="{{ route('panel.naive-bayes.create') }}" class="btn btn-primary">
              <i class="fa-solid fa-plus"></i> Tambah
