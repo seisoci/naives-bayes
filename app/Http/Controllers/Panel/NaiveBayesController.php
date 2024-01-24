@@ -124,6 +124,7 @@ class NaiveBayesController extends Controller
     if ($validator->passes()) {
       DB::beginTransaction();
       try {
+        dd($request->all());
         $data = NaiveBayes::findOrFail($id);
         $data->update($request->all());
         DB::commit();

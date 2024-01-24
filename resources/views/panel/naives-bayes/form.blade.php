@@ -58,7 +58,7 @@
                   <label class="control-label col-sm-3 align-self-center mb-0" for="select2Role">Tipe Build :</label>
                   <div class="col-sm-9">
                     <select name="tipe_build" class="form-select">
-                      <option value="Physical" @selected(isset($data->tipe_build) && $data->tipe_build == "Damage")>Damage</option>
+                      <option value="Damage" @selected(isset($data->tipe_build) && $data->tipe_build == "Damage")>Damage</option>
                       <option value="Magic" @selected(isset($data->tipe_build) && $data->tipe_build == "Magic")>Magic</option>
                       <option value="Tank" @selected(isset($data->tipe_build) && $data->tipe_build == "Tank")>Tank</option>
                     </select>
