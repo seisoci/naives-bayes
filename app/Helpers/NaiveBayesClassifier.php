@@ -112,7 +112,6 @@ class NaiveBayesClassifier {
     // Menampilkan jumlah masing-masing fitur untuk setiap kelas
 
     $organizedData = [];
-
     foreach ($this->tableCounts as $outcome => $categories) {
       foreach ($categories as $categoryName => $categoryValues) {
         foreach ($categoryValues as $itemName => $itemValue) {

@@ -159,7 +159,7 @@ class NaiveBayesController extends Controller
   {
       $dataTraining = NaiveBayes::selectRaw('
         `hero_pick`.`nama` as `hero`,
-        `hero_pick`.`nama` as `hero_musuh`,
+        `hero_musuh`.`nama` as `hero_musuh`,
         `naive_bayes`.`tipe_build`,
         `naive_bayes`.`emblem`,
         `naive_bayes`.`hasil`
