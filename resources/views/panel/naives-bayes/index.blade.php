@@ -9,7 +9,12 @@
             <h4 class="card-title">{{ $config['title'] ?? '' }}</h4>
           </div>
           <div class="col-sm-6 col-lg-6">
+
          <div class="d-flex justify-content-end">
+           <a href="#" class="btn btn-warning me-2" data-bs-toggle="modal"
+              data-bs-target="#modalCreate">
+             <i class="fa-solid fa-file-excel"></i> Import Data
+           </a>
            <a href="{{ route('panel.naive-bayes.show', 'prediksi') }}" class="btn btn-success me-2">
              <i class="fa-solid fa-calculator"></i> Prediksi Kemenangan
            </a>
@@ -39,6 +44,36 @@
       </div>
     </div>
   </div>
+  <div class="modal fade" id="modalCreate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Tambah</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="formStore" method="POST" action="{{ route('panel.heroes.import') }}">
+          @csrf
+          <div class="modal-body">
+            <div id="errorCreate" style="display:none;">
+              <div class="alert alert-danger" role="alert">
+                <div class="alert-text">
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>File Import<span class="text-danger">*</span></label>
+              <input type="file" name="file" accept=".xlsx" class="form-control"/>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
 @endsection
 
 @push('style')
@@ -56,6 +91,9 @@
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script>
     $(document).ready(function () {
+      let modalCreate = document.getElementById('modalCreate');
+      const bsCreate = new bootstrap.Modal(modalCreate);
+
       let dataTable = $('#Datatable').DataTable({
         lengthChange: false,
         buttons: ['pageLength', {
@@ -135,6 +173,50 @@
         initComplete: function (settings, json) {
           dataTable.buttons().container().appendTo('#Datatable_wrapper .col-md-6:eq(0)')
         },
+      });
+
+      $("#formStore").submit(function (e) {
+        e.preventDefault();
+        let form = $(this);
+        let btnSubmit = form.find("[type='submit']");
+        let btnSubmitHtml = btnSubmit.html();
+        let url = form.attr("action");
+        let data = new FormData(this);
+        $.ajax({
+          cache: false,
+          processData: false,
+          contentType: false,
+          type: "POST",
+          url: url,
+          data: data,
+          beforeSend: function () {
+            btnSubmit.addClass("disabled").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...').prop("disabled", "disabled");
+          },
+          success: function (response) {
+            let errorCreate = $('#errorCreate');
+            errorCreate.css('display', 'none');
+            errorCreate.find('.alert-text').html('');
+            btnSubmit.removeClass("disabled").html(btnSubmitHtml).removeAttr("disabled");
+            if (response.status === "success") {
+              toastr.success(response.message ?? "Data Berhasil Disimpan", 'Success !');
+              setTimeout(function() {
+                location.reload();
+              }, 1000);
+            } else {
+              toastr.error((response.message ? response.message : "Please complete your form"), 'Failed !');
+              if (response.error !== undefined) {
+                errorCreate.removeAttr('style');
+                $.each(response.error, function (key, value) {
+                  errorCreate.find('.alert-text').append('<span style="display: block">' + value + '</span>');
+                });
+              }
+            }
+          },
+          error: function (response) {
+            btnSubmit.removeClass("disabled").html(btnSubmitHtml).removeAttr("disabled");
+            toastr.error(response.responseJSON.message, 'Failed !');
+          }
+        });
       });
 
     });

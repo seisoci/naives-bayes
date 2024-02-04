@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Panel;
 
 use App\Helpers\NaiveBayesClassifier;
 use App\Http\Controllers\Controller;
+use App\Models\Hero;
 use App\Models\NaiveBayes;
+use App\Models\Sekolah;
 use App\Traits\ResponseStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Yajra\DataTables\Facades\DataTables;
 
 class NaiveBayesController extends Controller
@@ -124,7 +127,6 @@ class NaiveBayesController extends Controller
     if ($validator->passes()) {
       DB::beginTransaction();
       try {
-        dd($request->all());
         $data = NaiveBayes::findOrFail($id);
         $data->update($request->all());
         DB::commit();
@@ -159,6 +161,7 @@ class NaiveBayesController extends Controller
   public function prediksi(Request $request)
   {
       $dataTraining = NaiveBayes::selectRaw('
+        `hero_pick`.`nama` as `hero`,
         `hero_pick`.`nama` as `hero`,
         `hero_musuh`.`nama` as `hero_musuh`,
         `naive_bayes`.`tipe_build`,
@@ -197,4 +200,38 @@ class NaiveBayesController extends Controller
     }
     return $response;
   }
+
+  public function import(Request $request)
+  {
+    $validator = Validator::make($request->all(), [
+      'file' => 'required|mimes:xlsx',
+    ]);
+    if ($validator->passes()) {
+      $reader = new Xlsx();
+      $reader->setReadEmptyCells(false);
+      $reader->setReadDataOnly(true);
+      $spreadsheet = $reader->load($request['file']);
+      $sheetDataSekolah = $spreadsheet->getActiveSheet()->toArray();
+      unset($sheetDataSekolah[0]);
+
+      foreach ($sheetDataSekolah ?? [] as $item):
+        $hero = Hero::where('nama', $item[0])->firstOrFail();
+        $heroMusuh = Hero::where('nama', $item[1])->firstOrFail();
+        NaiveBayes::create([
+          'hero_id' => $hero['id'],
+          'hero_musuh_id' => $heroMusuh['id'],
+          'tipe_build' => $item[2],
+          'emblem' => $item[3],
+          'hasil' => $item[4] == 'win' ? 'Menang' : 'Kalah'
+        ]);
+
+      endforeach;
+
+      $response = response()->json($this->responseStore(true));
+    } else {
+      $response = response()->json(['error' => $validator->errors()->all()]);
+    }
+    return $response;
+  }
+
 }

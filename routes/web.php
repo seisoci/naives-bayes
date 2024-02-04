@@ -16,8 +16,8 @@ use App\Http\Controllers\Panel as Panel;
 */
 
 
-Route::post('logout', [Panel\AuthController::class, 'logout'])->name('logout');
-Route::get('logout', [Panel\AuthController::class, 'logout'])->name('logout');
+Route::post('logout', [Panel\AuthController::class, 'logout']);
+Route::get('logout', [Panel\AuthController::class, 'logout']);
 
 Route::get('/', [Panel\AuthController::class, 'showLoginForm']);
 Route::post('/', [Panel\AuthController::class, 'login'])->name('login');

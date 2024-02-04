@@ -27,13 +27,6 @@ Route::middleware('auth:panel')->group(function () {
   /* Profile */
   Route::resource('profile', Panel\ProfileController::class);
 
-  /* Category */
-  Route::get('categories/select2', [Panel\CategoryController::class, 'select2'])->name('categories.select2');
-  Route::resource('categories', Panel\CategoryController::class);
-
-  /* Sub Category */
-  Route::get('sub-categories/select2', [Panel\SubCategoryController::class, 'select2'])->name('sub-categories.select2');
-  Route::resource('sub-categories', Panel\SubCategoryController::class);
 
   Route::resource('profile', Panel\ProfileController::class);
   /* Role Route */
@@ -56,6 +49,7 @@ Route::middleware('auth:panel')->group(function () {
   Route::get('settings', [Panel\SettingController::class, 'general'])->name('settings.general.index');
   Route::put('settings', [Panel\SettingController::class, 'general_update'])->name('settings.general.update');
 
+  Route::post('naive-bayes/import', [Panel\NaiveBayesController::class, 'import'])->name('heroes.import');
   Route::get('heroes/select2', [Panel\HeroController::class, 'select2'])->name('heroes.select2');
   Route::resource('heroes', Panel\HeroController::class);
   Route::post('naive-bayes/prediksi', [Panel\NaiveBayesController::class, 'prediksi'])->name('naive-bayes.prediksi');
