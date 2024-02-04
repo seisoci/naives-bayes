@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('logout', [Panel\AuthController::class, 'logout'])->name('logout');
 Route::get('logout', [Panel\AuthController::class, 'logout'])->name('logout');
 
 Route::get('/', [Panel\AuthController::class, 'showLoginForm']);
