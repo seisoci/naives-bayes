@@ -48,6 +48,21 @@ class DataController extends Controller
     $naiveBayes = new NaiveBayesClassifier($dataTraining);
     $result = $naiveBayes->predict($request->all());
 
+    // $dataTraining = NaiveBayes::selectRaw('
+    //     `hero_pick`.`nama` as `hero`,
+    //     `hero_musuh`.`nama` as `hero_musuh`,
+    //     `naive_bayes`.`tipe_build`,
+    //     `naive_bayes`.`emblem`,
+    //     `naive_bayes`.`hasil`
+    //   ')
+    //   ->leftJoin('heroes AS hero_pick', 'hero_pick.id', '=', 'naive_bayes.hero_id')
+    //   ->leftJoin('heroes AS hero_musuh', 'hero_musuh.id', '=', 'naive_bayes.hero_musuh_id')
+    //   ->get()
+    //   ->toArray();
+
+    // $naiveBayes = new NaiveBayesClassifier($dataTraining);
+    // $result = $naiveBayes->predict($request->all());
+
 //    if($result == "Menang"){
 //      $result = true;
 //    }else{
